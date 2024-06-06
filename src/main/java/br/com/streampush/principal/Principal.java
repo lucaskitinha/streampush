@@ -3,8 +3,11 @@ package br.com.streampush.principal;
 import br.com.streampush.model.DadosSerie;
 import br.com.streampush.model.DadosTemporada;
 import br.com.streampush.model.Serie;
+import br.com.streampush.repository.SerieRepository;
 import br.com.streampush.service.ConsumoApi;
 import br.com.streampush.service.ConverteDados;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -15,6 +18,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+@Component
 public class Principal {
 
 	private Scanner leitura = new Scanner(System.in);
@@ -23,6 +27,10 @@ public class Principal {
 	private final String ENDERECO = "https://www.omdbapi.com/?t=";
 	private final String API_KEY = "&apikey=94294467";
 	private List<DadosSerie> dadosSeries = new ArrayList<>();
+
+	@Autowired
+	private SerieRepository serieRepository;
+
 	public void exibeMenu() throws UnsupportedEncodingException {
 		var opcao = -1;
 		while(opcao != 0){
@@ -60,8 +68,7 @@ public class Principal {
 
 	private void listarSeriesBuscadas() {
 
-		List<Serie> series = new ArrayList<>();
-		series = dadosSeries.stream().map(d -> new Serie(d)).collect(Collectors.toList());
+		List<Serie> series = serieRepository.findAll();
 
 		series.stream()
 				.sorted(Comparator.comparing(Serie::getGenero))
@@ -70,6 +77,7 @@ public class Principal {
 
 	private void buscarSerieWeb() throws UnsupportedEncodingException {
 		DadosSerie dados = getDadosSerie();
+		serieRepository.save(new Serie(dados));
 		dadosSeries.add(dados);
 		System.out.println(dados);
 	}
