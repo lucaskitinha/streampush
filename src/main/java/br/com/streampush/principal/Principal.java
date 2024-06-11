@@ -35,10 +35,7 @@ public class Principal {
 	private List<Serie> series = new ArrayList<>();
 	private Optional<Serie> serieBusca;
 
-	@Autowired
 	private SerieRepository serieRepository;
-	@Autowired
-	private EpisodioRepository episodioRepository;
 
 	@Transactional
 	public void exibeMenu() throws UnsupportedEncodingException {
